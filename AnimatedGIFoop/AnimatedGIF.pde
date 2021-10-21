@@ -1,47 +1,44 @@
 class AnimatedGIF {
 
-  PImage[] pics;
-  int currentFrame;
-  int numFrames;
-  float x, y, w, h;
+  PImage[] images;
+  int currentImg;
+  int rate;
 
-  AnimatedGIF(int nf, String pre, String post) {
-    x = width/2;
-    y = height/2;
-    w = width;
-    h = height;
-    numFrames = nf;
-    pics = new PImage[numFrames];
-    int i = 0;
-    while (i < numFrames) {
-      pics[i] = loadImage(pre+i+post);
-      i++;
-    }
-    currentFrame = 0;
+  AnimatedGIF(int n, String prefix, String suffix) {
+    images = new PImage[n];
+    loadImages(prefix, suffix);
+    currentImg = 0;
+    rate = 1;
   }
   
-  AnimatedGIF(int nf, String pre, String post, float _x, float _y, float _w, float _h) {
-    x = _x;
-    y = _y;
-    w = _w;
-    h = _h;
-    numFrames = nf;
-    pics = new PImage[numFrames];
-    int i = 0;
-    while (i < numFrames) {
-      pics[i] = loadImage(pre+i+post);
-      i++;
-    }
-    currentFrame = 0;
+  AnimatedGIF(int n, int r, String prefix, String suffix) {
+    images = new PImage[n];
+    loadImages(prefix, suffix);
+    currentImg = 0;
+    rate = r;
   }
-  
-  
 
   void show() {
-    imageMode(CENTER);
-    if (currentFrame == numFrames) currentFrame = 0;
-    image(pics[currentFrame], x, y, w, h);
-    currentFrame++;
+    if (currentImg >= images.length) currentImg = 0;
+    image(images[currentImg], width/2, height/2, width, height);
+    if (frameCount % rate == 0) currentImg++;
   }
-  
+
+  void loadImages(String prefix, String suffix) {
+    int i = 0;
+    while (i < images.length) {
+      String leadingZero = "";
+      if (images.length <= 10) leadingZero = "";
+      else if (images.length <= 100) {
+        if (i < 10) leadingZero = "0";
+        else leadingZero = "";
+      } else if (images.length > 100) {
+        if (i < 10) leadingZero = "00";
+        else if (i < 100) leadingZero = "0";
+        else leadingZero = "";
+      }
+      images[i] = loadImage(prefix+leadingZero+i+suffix);
+      i++;
+    }
+  }
 } //end of class
